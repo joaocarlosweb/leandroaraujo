@@ -147,4 +147,28 @@ document.addEventListener('DOMContentLoaded', () => {
             item.classList.toggle('active');
         });
     });
+
+    // --- LÓGICA DE SCROLL SUAVE PARA LINKS INTERNOS ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            
+            // Ignorar links vazios ou apenas '#'
+            if (href === '#') return;
+
+            e.preventDefault();
+            const target = document.querySelector(href);
+            
+            if (target) {
+                const headerOffset = 85; // Altura do cabeçalho + margem
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
 });
