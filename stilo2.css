@@ -22,15 +22,18 @@
     font-family: 'Inter', sans-serif;
 }
 
-html {
-    scroll-behavior: smooth;
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
     line-height: 1.6;
-    overflow-x: hidden;
 }
 
 h1,
@@ -82,13 +85,17 @@ h4 {
 
 section {
     padding: 120px 0;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 /* Header */
 header {
     position: fixed;
     top: 0;
-    width: 100%;
+    left: 0;
+    right: 0;
     background: rgba(8, 8, 8, 0);
     /* Transparente no topo */
     backdrop-filter: blur(0px);
