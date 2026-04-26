@@ -15,6 +15,19 @@
     --container: 1200px;
 }
 
+/* Preloader Styles */
+#preloader {
+    pointer-events: none;
+}
+
+.loader-bar {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.loader-progress {
+    box-shadow: 0 0 15px var(--primary);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -222,7 +235,8 @@ header.scrolled nav {
     padding: 40px;
     border-radius: 30px;
     border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    /* Removido transition: all para não conflitar com GSAP */
     position: relative;
     overflow: hidden;
 }
@@ -418,7 +432,7 @@ header.scrolled nav {
     border-radius: 0;
     display: block;
     filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
-    transition: transform 0.5s ease;
+    /* Removido para paralaxe GSAP suave */
 }
 
 .about-image-v2:hover img {

@@ -29,6 +29,15 @@
 </head>
 
 <body>
+    <!-- Preloader Premium -->
+    <div id="preloader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #080808; z-index: 10000; display: flex; align-items: center; justify-content: center;">
+        <div class="loader-content" style="text-align: center;">
+            <div class="logo" style="font-size: 2.5rem; margin-bottom: 20px; opacity: 0; transform: translateY(20px);">LEANDRO<span>ARAUJO</span></div>
+            <div class="loader-bar" style="width: 200px; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; margin: 0 auto;">
+                <div class="loader-progress" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--primary);"></div>
+            </div>
+        </div>
+    </div>
 
     <header>
         <nav class="container">
@@ -536,6 +545,9 @@
         </div>
     </footer>
 
+    <!-- GSAP para Animações Premium -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="config2.js"></script>
 </body>
 

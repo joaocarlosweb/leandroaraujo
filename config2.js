@@ -72,21 +72,178 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSlider();
     });
 
-    // --- ANIMAÇÕES DE REVELAÇÃO ---
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, { threshold: 0.1 });
+    // --- ANIMAÇÕES GSAP (PREMIUM ENTRY) ---
+    gsap.registerPlugin(ScrollTrigger);
 
-    document.querySelectorAll('.sol-card, .price-box, .video-container').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'all 0.6s ease-out';
-        observer.observe(el);
+    const mainTl = gsap.timeline();
+
+    // 1. Animação do Preloader
+    mainTl.to(".loader-content .logo", {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power3.out"
+    })
+    .to(".loader-progress", {
+        left: "0%",
+        duration: 1.2,
+        ease: "power2.inOut"
+    }, "-=0.3")
+    .to("#preloader", {
+        yPercent: -100,
+        duration: 1,
+        ease: "power4.inOut"
+    })
+    .from("header", {
+        y: -100,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out"
+    }, "-=0.5")
+    .from(".hero-v2 .badge", {
+        y: 20,
+        opacity: 0,
+        duration: 0.6,
+        ease: "power3.out"
+    }, "-=0.8")
+    .from(".hero-v2 h1", {
+        y: 40,
+        opacity: 0,
+        scale: 1.1,
+        filter: "blur(10px)",
+        duration: 1.2,
+        ease: "power4.out"
+    }, "-=0.6")
+    .from(".video-container", {
+        scale: 0.9,
+        opacity: 0,
+        y: 40,
+        duration: 1,
+        ease: "power3.out"
+    }, "-=0.5")
+    .from(".hero-v2 .btn-primary", {
+        y: 20,
+        opacity: 0,
+        duration: 0.6,
+        ease: "power3.out"
+    }, "-=0.4");
+
+    // 2. Efeitos Adicionais GSAP (Efeito Flutuante e Paralaxe)
+    // Ícones flutuantes
+    gsap.to(".sol-icon", {
+        y: -10,
+        repeat: -1,
+        yoyo: true,
+        duration: 2,
+        ease: "sine.inOut",
+        stagger: 0.3
+    });
+
+    // Paralaxe na imagem do professor
+    gsap.to(".about-image-v2 img", {
+        scrollTrigger: {
+            trigger: ".about-professor",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1
+        },
+        y: -50,
+        ease: "none"
+    });
+
+    // 3. Revelação durante o Scroll (ScrollTrigger)
+    // Seção de Soluções (Grid Stagger) - CORREÇÃO: Trigger mais sensível
+    gsap.from(".sol-card", {
+        scrollTrigger: {
+            trigger: ".solution-v2", // Ativa quando a seção começa
+            start: "top 85%", // Mais sensível que 80%
+        },
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.15,
+        ease: "back.out(1.7)"
+    });
+
+    // Timeline para a seção "Sobre o Professor"
+    const aboutTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: ".about-professor",
+            start: "top 70%"
+        }
+    });
+
+    aboutTl.from(".about-badge", { opacity: 0, x: -20, duration: 0.5 })
+           .from(".about-title", { opacity: 0, y: 30, duration: 0.6 }, "-=0.3")
+           .from(".about-description", { opacity: 0, y: 20, duration: 0.6 }, "-=0.3")
+           .from(".about-sub-section", { opacity: 0, y: 20, stagger: 0.2 }, "-=0.3");
+
+    // Revelação individual para outros elementos
+    const fadeUpElements = document.querySelectorAll('.price-box, .timeline-item, .slide-card');
+    
+    fadeUpElements.forEach((el) => {
+        gsap.from(el, {
+            scrollTrigger: {
+                trigger: el,
+                start: "top 90%", // Revela assim que entrar na tela
+                toggleActions: "play none none none"
+            },
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: "power2.out"
+        });
+    });
+
+    // Efeito Magnético simples no botão principal
+    const mainBtn = document.querySelector('.hero-v2 .btn-primary');
+    if (mainBtn) {
+        mainBtn.addEventListener('mousemove', (e) => {
+            const rect = mainBtn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            gsap.to(mainBtn, {
+                x: x * 0.3,
+                y: y * 0.3,
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        });
+
+        mainBtn.addEventListener('mouseleave', () => {
+            gsap.to(mainBtn, {
+                x: 0,
+                y: 0,
+                duration: 0.5,
+                ease: "elastic.out(1, 0.3)"
+            });
+        });
+    }
+
+    // Micro-interações de Hover nos Cards
+    document.querySelectorAll('.sol-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            gsap.to(card, {
+                y: -10,
+                scale: 1.02,
+                borderColor: "rgba(198, 255, 0, 0.6)",
+                backgroundColor: "rgba(30, 30, 30, 0.8)",
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        });
+
+        card.addEventListener('mouseleave', () => {
+            gsap.to(card, {
+                y: 0,
+                scale: 1,
+                borderColor: "rgba(255, 255, 255, 0.05)",
+                backgroundColor: "rgba(30, 30, 30, 0.5)",
+                duration: 0.5,
+                ease: "power2.out"
+            });
+        });
     });
 
     updateSlider(); // Inicialização
