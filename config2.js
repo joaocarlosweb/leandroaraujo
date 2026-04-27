@@ -72,63 +72,82 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSlider();
     });
 
-    // --- ANIMAÇÕES GSAP (PREMIUM ENTRY) ---
-    gsap.registerPlugin(ScrollTrigger);
+    // --- CONFIGURAÇÃO INICIAL GSAP ---
+    try {
+        gsap.registerPlugin(ScrollTrigger);
+    } catch (e) {
+        console.error("GSAP ou ScrollTrigger não carregado corretamente.");
+    }
+
+    // FAIL-SAFE: Garante que o preloader suma mesmo se o JS travar
+    setTimeout(() => {
+        const loader = document.getElementById('preloader');
+        if (loader && loader.style.display !== 'none') {
+            gsap.to(loader, { yPercent: -100, duration: 0.5, ease: "power2.inOut" });
+        }
+    }, 2000);
 
     const mainTl = gsap.timeline();
 
     // 1. Animação do Preloader
-    mainTl.to(".loader-content .logo", {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power3.out"
-    })
-    .to(".loader-progress", {
-        left: "0%",
-        duration: 1.2,
-        ease: "power2.inOut"
-    }, "-=0.3")
-    .to("#preloader", {
-        yPercent: -100,
-        duration: 1,
-        ease: "power4.inOut"
-    })
-    .from("header", {
-        y: -100,
+    if (document.querySelector('.loader-progress')) {
+        // Primeiro o nome Leandro Araujo aparece
+        mainTl.from(".loader-content .logo", {
+            y: 20,
+            opacity: 0,
+            duration: 0.8,
+            ease: "power3.out"
+        })
+        // Depois a barra de progresso enche
+        .to(".loader-progress", {
+            left: "0%",
+            duration: 0.8,
+            ease: "power2.inOut"
+        }, "-=0.2")
+        // No final, a tela preta sobe
+        .to("#preloader", {
+            yPercent: -100,
+            duration: 0.8,
+            ease: "expo.inOut",
+            onStart: () => {
+                gsap.set("header", { opacity: 1, y: 0 });
+            }
+        });
+    }
+
+    // 2. Animação de Entrada do Site (Logo e Menu)
+    mainTl.from(".logo", {
+        y: -30,
         opacity: 0,
-        duration: 1,
-        ease: "power3.out"
-    }, "-=0.5")
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power2.out"
+    }, "-=0.4")
+    // 3. Entrada triunfal do Título e Badge (O QUE A FACULDADE NÃO ENSINOU)
     .from(".hero-v2 .badge", {
         y: 20,
         opacity: 0,
-        duration: 0.6,
-        ease: "power3.out"
-    }, "-=0.8")
+        duration: 0.5,
+        ease: "power2.out"
+    }, "-=0.2")
     .from(".hero-v2 h1", {
         y: 40,
         opacity: 0,
-        scale: 1.1,
         filter: "blur(10px)",
-        duration: 1.2,
-        ease: "power4.out"
-    }, "-=0.6")
-    .from(".video-container", {
-        scale: 0.9,
-        opacity: 0,
-        y: 40,
-        duration: 1,
+        scale: 0.95,
+        duration: 0.8,
         ease: "power3.out"
-    }, "-=0.5")
-    .from(".hero-v2 .btn-primary", {
+    }, "-=0.3")
+    // 4. RESTAURAR TODOS OS BOTÕES DA PÁGINA
+    .from(".btn", {
         y: 20,
         opacity: 0,
         duration: 0.6,
-        ease: "power3.out"
+        stagger: 0.1,
+        ease: "back.out(1.7)"
     }, "-=0.4");
 
-    // 2. Efeitos Adicionais GSAP (Efeito Flutuante e Paralaxe)
+    // Efeitos Adicionais GSAP (Efeito Flutuante e Paralaxe)
     // Ícones flutuantes
     gsap.to(".sol-icon", {
         y: -10,
@@ -152,40 +171,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 3. Revelação durante o Scroll (ScrollTrigger)
-    // Seção de Soluções (Grid Stagger) - CORREÇÃO: Trigger mais sensível
+    // Seção de Soluções (Grid Stagger)
     gsap.from(".sol-card", {
         scrollTrigger: {
-            trigger: ".solution-v2", // Ativa quando a seção começa
-            start: "top 85%", // Mais sensível que 80%
+            trigger: ".solution-v2",
+            start: "top 85%",
         },
         y: 50,
         opacity: 0,
         duration: 1,
         stagger: 0.15,
-        ease: "back.out(1.7)"
+        ease: "power2.out"
     });
-
-    // Timeline para a seção "Sobre o Professor"
-    const aboutTl = gsap.timeline({
-        scrollTrigger: {
-            trigger: ".about-professor",
-            start: "top 70%"
-        }
-    });
-
-    aboutTl.from(".about-badge", { opacity: 0, x: -20, duration: 0.5 })
-           .from(".about-title", { opacity: 0, y: 30, duration: 0.6 }, "-=0.3")
-           .from(".about-description", { opacity: 0, y: 20, duration: 0.6 }, "-=0.3")
-           .from(".about-sub-section", { opacity: 0, y: 20, stagger: 0.2 }, "-=0.3");
 
     // Revelação individual para outros elementos
-    const fadeUpElements = document.querySelectorAll('.price-box, .timeline-item, .slide-card');
+    const fadeUpElements = document.querySelectorAll('.price-box, .timeline-item, .slide-card, .about-content');
     
     fadeUpElements.forEach((el) => {
         gsap.from(el, {
             scrollTrigger: {
                 trigger: el,
-                start: "top 90%", // Revela assim que entrar na tela
+                start: "top 90%",
                 toggleActions: "play none none none"
             },
             y: 30,
@@ -195,31 +201,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Efeito Magnético simples no botão principal
-    const mainBtn = document.querySelector('.hero-v2 .btn-primary');
-    if (mainBtn) {
-        mainBtn.addEventListener('mousemove', (e) => {
-            const rect = mainBtn.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            
-            gsap.to(mainBtn, {
-                x: x * 0.3,
-                y: y * 0.3,
-                duration: 0.3,
-                ease: "power2.out"
-            });
-        });
+    // Efeito Magnético desativado momentaneamente para evitar conflitos de visibilidade
+    // (Pode ser reativado após confirmarmos que os botões voltaram)
 
-        mainBtn.addEventListener('mouseleave', () => {
-            gsap.to(mainBtn, {
-                x: 0,
-                y: 0,
-                duration: 0.5,
-                ease: "elastic.out(1, 0.3)"
-            });
-        });
-    }
+    updateSlider(); // Inicialização
 
     // Micro-interações de Hover nos Cards
     document.querySelectorAll('.sol-card').forEach(card => {
@@ -245,8 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
-
-    updateSlider(); // Inicialização
 
     // --- LÓGICA DE CURSOR GLOW REFINADO (COM LAG) ---
     const glow = document.createElement('div');
