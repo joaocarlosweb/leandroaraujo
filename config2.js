@@ -158,7 +158,23 @@ document.addEventListener('DOMContentLoaded', () => {
         stagger: 0.3
     });
 
-    // Paralaxe na imagem do professor
+    // Timeline para a seção "Sobre o Professor" (Responsivo)
+    const aboutTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: ".about-professor",
+            start: "top 90%", // Inicia mais cedo no mobile
+            end: "bottom 20%", 
+            scrub: 1,
+            toggleActions: "play reverse play reverse"
+        }
+    });
+
+    aboutTl.from(".about-badge", { opacity: 0, x: -30, duration: 1 })
+           .from(".about-title", { opacity: 0, y: 30, duration: 1 }, "-=0.5")
+           .from(".about-description", { opacity: 0, y: 20, duration: 1 }, "-=0.5")
+           .from(".about-sub-section", { opacity: 0, x: 20, stagger: 0.2, duration: 1 }, "-=0.5");
+
+    // Paralaxe na imagem do professor (Funciona em todos os dispositivos)
     gsap.to(".about-image-v2 img", {
         scrollTrigger: {
             trigger: ".about-professor",
@@ -166,33 +182,55 @@ document.addEventListener('DOMContentLoaded', () => {
             end: "bottom top",
             scrub: 1
         },
-        y: -50,
+        y: -40,
         ease: "none"
     });
 
     // 3. Revelação durante o Scroll (ScrollTrigger)
-    // Seção de Soluções (Grid Stagger)
-    gsap.from(".sol-card", {
-        scrollTrigger: {
-            trigger: ".solution-v2",
-            start: "top 85%",
-        },
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.15,
-        ease: "power2.out"
+    let mm = gsap.matchMedia();
+
+    // MOBILE E TABLET (Até 1024px para incluir tablets)
+    mm.add("(max-width: 1024px)", () => {
+        document.querySelectorAll('.sol-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 95%",
+                    toggleActions: "play reverse play reverse"
+                },
+                x: i % 2 === 0 ? -50 : 50, // Menos agressivo no mobile
+                opacity: 0,
+                duration: 1,
+                ease: "power2.out"
+            });
+        });
     });
 
-    // Revelação individual para outros elementos
+    // DESKTOP (Acima de 1024px)
+    mm.add("(min-width: 1025px)", () => {
+        gsap.from(".sol-card", {
+            scrollTrigger: {
+                trigger: ".solution-v2",
+                start: "top 85%",
+                toggleActions: "play reverse play reverse"
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            stagger: 0.15,
+            ease: "power2.out"
+        });
+    });
+
+    // Revelação individual para outros elementos (Global)
     const fadeUpElements = document.querySelectorAll('.price-box, .timeline-item, .slide-card, .about-content');
     
     fadeUpElements.forEach((el) => {
         gsap.from(el, {
             scrollTrigger: {
                 trigger: el,
-                start: "top 90%",
-                toggleActions: "play none none none"
+                start: "top 95%",
+                toggleActions: "play reverse play reverse"
             },
             y: 30,
             opacity: 0,
