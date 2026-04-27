@@ -13,6 +13,100 @@
     --radius: 12px;
     --transition: all 0.3s ease;
     --container: 1200px;
+    --glow-color: rgba(198, 255, 0, 0.5);
+}
+
+/* --- PREMIUM SHINY BUTTONS --- */
+.btn-shiny {
+    position: relative;
+    padding: 16px 40px;
+    border-radius: 50px;
+    background: #0d0d0d;
+    color: var(--primary);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: none;
+    overflow: hidden;
+    z-index: 1;
+    cursor: pointer;
+    gap: 10px;
+}
+
+.btn-shiny span {
+    position: relative;
+    z-index: 5;
+}
+
+.btn-shiny::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250%;
+    height: 250%;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        var(--primary) 10%,
+        rgba(198, 255, 0, 0.2) 20%,
+        transparent 30%
+    );
+    animation: rotate-border 3s linear infinite;
+    transform: translate(-50%, -50%);
+    z-index: -2;
+}
+
+.btn-shiny::after {
+    content: '';
+    position: absolute;
+    inset: 2px; /* Espessura da borda */
+    background: #0d0d0d;
+    border-radius: 50px;
+    z-index: -1;
+    transition: all 0.3s ease;
+}
+
+.btn-shiny:hover {
+    color: #000;
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(198, 255, 0, 0.4);
+}
+
+.btn-shiny:hover::after {
+    background: var(--primary);
+}
+
+/* Versão com Fundo Neon (Opcional) */
+.btn-shiny-primary {
+    background: var(--primary);
+    color: #000;
+}
+
+.btn-shiny-primary::after {
+    background: var(--primary);
+    opacity: 0.9;
+}
+
+.btn-shiny-primary::before {
+    background: conic-gradient(
+        from 0deg,
+        transparent 0 270deg,
+        #fff 360deg
+    );
+}
+
+@keyframes rotate-border {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
 }
 
 /* Preloader Styles */
