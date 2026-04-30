@@ -49,13 +49,11 @@
     left: 50%;
     width: 250%;
     height: 250%;
-    background: conic-gradient(
-        from 0deg,
-        transparent 0%,
-        var(--primary) 10%,
-        rgba(198, 255, 0, 0.2) 20%,
-        transparent 30%
-    );
+    background: conic-gradient(from 0deg,
+            transparent 0%,
+            var(--primary) 10%,
+            rgba(198, 255, 0, 0.2) 20%,
+            transparent 30%);
     animation: rotate-border 3s linear infinite;
     transform: translate(-50%, -50%);
     z-index: -2;
@@ -64,7 +62,8 @@
 .btn-shiny::after {
     content: '';
     position: absolute;
-    inset: 2px; /* Espessura da borda */
+    inset: 2px;
+    /* Espessura da borda */
     background: #0d0d0d;
     border-radius: 50px;
     z-index: -1;
@@ -93,17 +92,16 @@
 }
 
 .btn-shiny-primary::before {
-    background: conic-gradient(
-        from 0deg,
-        transparent 0 270deg,
-        #fff 360deg
-    );
+    background: conic-gradient(from 0deg,
+            transparent 0 270deg,
+            #fff 360deg);
 }
 
 @keyframes rotate-border {
     from {
         transform: translate(-50%, -50%) rotate(0deg);
     }
+
     to {
         transform: translate(-50%, -50%) rotate(360deg);
     }
@@ -278,6 +276,12 @@ header.scrolled nav {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(198, 255, 0, 0.2);
     aspect-ratio: 16 / 9;
     background: #000;
+
+    img {
+        margin: auto;
+    }
+
+
 }
 
 .video-container iframe {
@@ -498,8 +502,8 @@ header.scrolled nav {
 
 .about-image-v2 {
     position: relative;
-    width: 300px;
-    height: 300px;
+    width: 600px;
+    height: 600px;
     z-index: 1;
     display: flex;
     justify-content: center;
